@@ -1,11 +1,7 @@
 #include "raylib.h"
 #include "../config.h"
 
-#define CLAY_USE_RAYLIB
-#define CLAY_UI_IMPLEMENTATION
 #include "ui/ui.h"
-#undef CLAY_USE_RAYLIB
-#undef CLAY_UI_IMPLEMENTATION
 
 #include "core/node.h"
 #include "../main_node.h"
@@ -19,46 +15,43 @@ int main() {
     fonts[0] = LoadFontEx("assets/Born2bSportyV2.ttf", 128, 0, 400);
     SetTextureFilter(fonts[0].texture, TEXTURE_FILTER_BILINEAR);
 
-    ClayInit(SCREEN_WIDTH, SCREEN_HEIGHT, ClayRaylibMeasureText, 0);
-
     Main main;
-    Rectangle viewport = (Rectangle) {
-        .x = 0,
-        .y = 0,
-        .width = SCREEN_WIDTH,
-        .height = SCREEN_HEIGHT
+
+    Viewport viewport = (Viewport){
+        .rect = (Rectangle) {
+            .x = 0,
+            .y = 0,
+            .width = SCREEN_WIDTH,
+            .height = SCREEN_HEIGHT
+        },
+        .drawTexture = { 0 },
     };
 
     while (!WindowShouldClose()) {
         Vector2 mouse = GetMousePosition();
-        ClaySetPointer(mouse.x, mouse.y, IsMouseButtonDown(MOUSE_LEFT_BUTTON));
 
-        viewport.width = GetScreenWidth();
-        viewport.height = GetScreenHeight();
+        viewport.rect.x = 0;
+        viewport.rect.y = 0;
+        viewport.rect.width = GetScreenWidth();
+        viewport.rect.height = GetScreenHeight();
 
         // Update
-        main.Update(viewport);
+        main.Update(&viewport);
+
+        BeginTextureMode(viewport.drawTexture);
+            ClearBackground(BLACK);
+            main.Draw(&viewport);
+        EndTextureMode();
 
         // Draw
         BeginDrawing();
-        ClearBackground(BLACK);
-        ClayBeginFrame(GetScreenWidth(), GetScreenHeight());
-
-        /*BeginClay((ClayOptions) {
-            .id = "MainRoot",
-            .width = CLAY_GROW(),
-            .height = CLAY_GROW(),
-            .backgroundColor = CLAY_RGB(100, 100, 100),
-        });*/
-            main.Draw(viewport);
-        EndClay();
-        
-        ClayRenderCommandArray commands = ClayEndFrame();
-        ClayRaylibRender(commands, fonts);
+        DrawTextureRec(viewport.drawTexture.texture,
+            (Rectangle){ 0, 0, (float)viewport.drawTexture.texture.width, (float)-viewport.drawTexture.texture.height },
+            (Vector2){ 0, 0 }, WHITE);
         EndDrawing();
     }
 
-    ClayShutdown();
+    UnloadRenderTexture(viewport.drawTexture);
     CloseWindow();
 
     return 0;

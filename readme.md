@@ -1,0 +1,5 @@
+# THE DREAM!
+A simple "engine" which can provide backends, utility math and such so I can focus on just making games in C
+The dream is for this to also have support for a "scene tree" where we split the screen using a [rectcut](https://web.archive.org/web/20210306093517/https://halt.software/dead-simple-layouts/) like interface for rendering, so what a user would need would just be to provide a Node instance with a draw function, this function then just declares "Oh I want these sub children to draw" where each of them declare what they need, which then gets cut available.
+The idea is that we process a node tree from the bottom up where each entry draws in its own "universe" using textures
+The dream is that I'll be able to use this as a programaticcally focused alternative to Godot for game jams and examples usages such as my dream "ebook reader RPG" or even [my websites games](https://github.com/coffandro/coffandro.github.io/tree/main/games)

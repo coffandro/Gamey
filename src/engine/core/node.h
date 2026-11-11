@@ -3,6 +3,16 @@
 #include <vector>
 #include "raylib.h"
 
+typedef struct {
+    Rectangle rect;
+    RenderTexture2D drawTexture;
+} Viewport;
+
+Rectangle cut_left(Rectangle* rect, float a);
+Rectangle cut_right(Rectangle* rect, float a);
+Rectangle cut_top(Rectangle* rect, float a);
+Rectangle cut_bottom(Rectangle* rect, float a);
+
 class Node {
 private:
     std::vector<Node*> children;
@@ -17,6 +27,6 @@ public:
     std::vector<Node*> GetChildren();
     Node* GetChild(int index);
 
-    virtual void Update(Rectangle viewport);
-    virtual void Draw(Rectangle viewport);
+    virtual void Update(Viewport *viewport);
+    virtual void Draw(Viewport *viewport);
 };

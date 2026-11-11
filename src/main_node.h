@@ -1,17 +1,19 @@
 #pragma once
 #include "engine/core/node.h"
-#include "raylib.h"
+#include "viewport_node.h"
+#include "controls_node.h"
 
 class Main : public Node {
 private:
-    Vector2 pos, vel;
+    ControlsNode controls_node;
+    ViewportNode viewport_node;
 
 public:
     Main();
 
     ~Main();
     
-    void Update(Rectangle viewport) override;
+    void Update(Viewport *viewport) override;
 
-    void Draw(Rectangle viewport) override;
+    void Draw(Viewport *viewport) override;
 };

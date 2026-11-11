@@ -2,34 +2,34 @@
 #include <iostream>
 
 Main::Main() : Node() {
-    pos = (Vector2) {50, 50};
-    vel = (Vector2) {2.5, -2.5};
+    AddChild(&viewport_node);
+    AddChild(&controls_node);
 }
 
-Main::~Main() { }
+Main::~Main() {
 
-void Main::Update(Rectangle viewport) {
-    Node::Update(viewport);
-
-    if (pos.x > viewport.width ||
-        pos.x < 0
-    ) {
-        vel.x *= -1;
-    }
-
-    if (pos.y > viewport.height ||
-        pos.y < 0
-    ) {
-        vel.y *= -1;
-    }
-
-    pos.x += vel.x;
-    pos.y += vel.y;
 }
 
-void Main::Draw(Rectangle viewport) {
-    Node::Draw(viewport);
+void Main::Update(Viewport *viewport) {
+    Rectangle remaining = viewport->rect;
+    float half = remaining.width / 2.0f;
+    Rectangle left = cut_top(&remaining, half);
 
-    DrawText("Hello!", 50, 50, 48, RAYWHITE);
-    DrawCircle(pos.x, pos.y, 25, WHITE);
+    Viewport top_vp = { left, viewport->drawTexture };
+    Viewport bottom_vp = { remaining, viewport->drawTexture };
+
+    viewport_node.Update(&top_vp);
+    controls_node.Update(&bottom_vp);
+}
+
+void Main::Draw(Viewport *viewport) {
+    Rectangle remaining = viewport->rect;
+    float half = remaining.width / 2.0f;
+    Rectangle left = cut_top(&remaining, half);
+
+    Viewport top_vp = { left, viewport->drawTexture };
+    Viewport bottom_vp = { remaining, viewport->drawTexture };
+
+    viewport_node.Draw(&top_vp);
+    controls_node.Draw(&bottom_vp);
 }
